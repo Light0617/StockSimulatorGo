@@ -33,10 +33,13 @@ const actions = {
     commit('INIT_STOCKS');
   },
   fetchStockPrice: ({ commit }, symbol) => {
+    console.log('fetch');
     axios.get('query?function=TIME_SERIES_INTRADAY&symbol='+ symbol +'&interval=1min&apikey=TFMMQBROLJK126MV')
       .then(res => {
-        const dataArray = res.data['Time Series (1min)'];
-        const price = dataArray['2018-10-03 15:59:00']['4. close'];
+        let dataArray = res.data['Time Series (1min)'];
+        let latestTime = Object.keys(dataArray).sort().slice(-1)[0];
+        console.log('latestTime=' + latestTime);
+        const price = dataArray[latestTime]['4. close'];
         const stock = {
           symbol: symbol,
           price: price

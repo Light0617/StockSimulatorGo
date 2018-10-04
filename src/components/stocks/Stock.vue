@@ -29,6 +29,7 @@
 </template>
 <script>
 import { mapState } from 'vuex';
+import { setInterval } from 'timers';
 export default {
   props: ['stock'],
   data() {
@@ -36,8 +37,16 @@ export default {
       quantity: 0
     }
   },
-  mounted() {
-    this.$store.dispatch('fetchStockPrice', this.stock.symbol);
+  mounted() { 
+    if(this.price == 0) {
+      setInterval(() => {
+        this.$store.dispatch('fetchStockPrice', this.stock.symbol);
+      }, 2000);
+    } else {
+      setInterval(() => {
+        this.$store.dispatch('fetchStockPrice', this.stock.symbol);
+      }, 5 * 60 * 1000);
+    }
   },
   computed: {
     price() {
