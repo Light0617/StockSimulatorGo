@@ -1,7 +1,7 @@
 <template>
   <div>
-    <h1>The Portfolio Component</h1>
-    <app-stock v-for='stock in stocks' :key='stock.id'  
+    <h1>My Portfolio</h1>
+    <app-stock v-for='stock in stocks' :key='stock.symbol'  
       :stock='stock'></app-stock>
   </div>
 </template>

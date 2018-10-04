@@ -3,8 +3,8 @@
     <div class='panel panel-success'>
       <div class='panel-heading'>
         <h3 class='panel-title'>
-          {{ stock.name }}
-          <small>(Price: {{ stock.price }})</small>
+          {{ stock.symbol }}
+          <small>(Price: {{ price }})</small>
         </h3>
       </div>
       <div class='panel-body'>
@@ -28,6 +28,7 @@
   </div>
 </template>
 <script>
+import { mapState } from 'vuex';
 export default {
   props: ['stock'],
   data() {
@@ -35,7 +36,15 @@ export default {
       quantity: 0
     }
   },
+  mounted() {
+    this.$store.dispatch('fetchStockPrice', this.stock.symbol);
+  },
   computed: {
+    price() {
+      if(this.$store.getters.stocks == null) return 0;
+      const record = this.$store.getters.stocks.find(element => element.symbol == this.stock.symbol);
+      return record.price;
+    },
     funds(){
       return this.$store.getters.funds;
     },
@@ -46,7 +55,7 @@ export default {
   methods: {
     buyStock() {
       const order = {
-        stockId: this.stock.id,
+        stockSymbol: this.stock.symbol,
         stockPrice: this.stock.price,
         quantity: this.quantity
       };

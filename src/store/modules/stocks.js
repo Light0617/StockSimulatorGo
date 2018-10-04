@@ -1,34 +1,49 @@
-import stocks from '../../data/stocks';
+import stocksName from '../../data/stocksName';
+import axios from 'axios';
 
 const state = {
   stocks: []
 };
 
 const mutations = {
-  'SET_STOCKS' (state, stocks) {
-    state.stocks = stocks;
+  'ADD_STOCK' (state, stock) {
+    state.stocks.push(stock);
   },
-  'RND_STOCKS' (state) {
-    state.stocks.forEach(stock => {
-      //using stchastic process
-      const annual_rate = 0.2;
-      const annual_std = 0.2;
-      const dialy_rate = annual_rate / 365;
-      const std = annual_std * Math.sqrt(1 / 365);
-      stock.price = Math.round(stock.price * (1 + dialy_rate + Math.random() * 4 * std - 2 * std));
-    })
+  'SET_STOCK_PRICE' (state, payload) {
+    state.stocks = state.stocks.map(stock => {
+      if (stock.symbol === payload.symbol) {
+        return Object.assign({}, stock, { 'price' : payload.price } )
+      }
+      return stock;
+    });
+  },
+  'INIT_STOCKS' (state) {
+    stocksName.forEach(item => {
+      const stock = {
+        'symbol': item.symbol,
+        'price': 0
+      };
+      state.stocks.push(stock);
+    });
   }
 };
 
 const actions = {
-  buyStock: ({commit}, order) => {
-    commit('BUY_STOCK', order);
+  initStocks: ({ commit }) => {
+    commit('INIT_STOCKS');
   },
-  initStocks: ({commit}) => {
-    commit('SET_STOCKS', stocks);
-  },
-  randomizeStocks: ({commit}) => {
-    commit('RND_STOCKS');
+  fetchStockPrice: ({ commit }, symbol) => {
+    axios.get('query?function=TIME_SERIES_INTRADAY&symbol='+ symbol +'&interval=1min&apikey=TFMMQBROLJK126MV')
+      .then(res => {
+        const dataArray = res.data['Time Series (1min)'];
+        const price = dataArray['2018-10-03 15:59:00']['4. close'];
+        const stock = {
+          symbol: symbol,
+          price: price
+        }
+        commit('SET_STOCK_PRICE', stock);
+      })
+      .catch(error => console.log(error));
   }
 };
 

@@ -1,22 +1,23 @@
 <template>
   <div>
-    <h1>The Stocks Component</h1>
-    <app-stock v-for='stock in stocks' :key='stock.id'  
+    <h1>All Available Stocks</h1>
+    <app-stock v-for='stock in stocks' :key='stock.symbol'  
       :stock='stock'></app-stock>
   </div>
 </template>
 
 <script>
-import Stock from './Stock.vue';
+import Stock from "./Stock.vue";
+import { mapState } from 'vuex'
 
 export default {
   components: {
-    appStock : Stock
+    appStock: Stock
   },
   computed: {
     stocks() {
       return this.$store.getters.stocks;
     }
   }
-}
+};
 </script>

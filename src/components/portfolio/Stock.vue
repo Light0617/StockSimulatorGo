@@ -3,7 +3,7 @@
     <div class='panel panel-info'>
       <div class='panel-heading'>
         <h3 class='panel-title'>
-          {{ stock.name }}
+          {{ stock.symbol }}
           <small>(Price: {{ stock.price }} | Quantity: {{ stock.quantity }})</small>
         </h3>
       </div>
@@ -47,7 +47,7 @@ export default {
     }),
     sellStock() {
       const order = {
-        stockId: this.stock.id,
+        stockSymbol: this.stock.symbol,
         stockPrice: this.stock.price,
         quantity: this.quantity
       };
